@@ -3,17 +3,67 @@ import { Dimensions, Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, V
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Isao } from 'react-native-textinput-effects';
+
 import SwitchSelector from 'react-native-switch-selector';
 
 const windowWidth = Dimensions.get('window').width;
+
+const ENDPOINT = "https://uw-crowd-control.herokuapp.com/login";
 //const windowHeight = Dimensions.get('window').height;
 
 export class Login extends React.Component {
     constructor(props) {
         super(props);
+
+        this.toState = function(){
+            // API docs: https://stoplight.io/p/docs/gh/kroat/crowd-control-api
+
+            // This is the endpoint api
+            const URL = `https://uw-crowd-control.herokuapp.com/login?email=${this.username}&password=${this.password}&key=su8tpE6D2gh`;
+        
+            // Wrapping everything into async and using await allows for code to run procedurally
+            // I couldn't get fetch to work asyncrouslly in another class
+            // so there's proabably a better way to do this 
+            const request = async () => {
+                const response = await fetch(URL); // Send the request
+                const json = await response.json(); // Jsonify
+                /*
+                Expected JSON response for a successful login:
+                {
+                    "Result": true,
+                    "Status": "1,2,or 3 (Integer)",
+                    "linkedBar": "bar owner's email",
+                    "city": "User's city"
+                }
+                */
+                const result = Boolean(await json["Result"]); // Result stores (true/false) for whether or not a user exists
+                
+                // Print it out
+                console.log(`User attempted login (${this.username},${this.password}) ~ got response: ${result}`);
+
+                if(result || 1) // Case in which the user exists (just remove || 1)
+                {
+                    // Note, the JSON response will return the status, which automatically can select
+                    // the intended state (1=User, 2=Bouncer, 3=Owner)
+                    if(this.state == null){
+                        navPath: 'HomeDrawer';
+                        return this.props.navigation.navigate(this.state.navPath);
+                    }else{
+                        return this.props.navigation.navigate(this.state.navPath);
+                    }
+                }
+                // Need to add: case in which a user does not exist
+                // Popups for unsuccessful logins
+            }
+            request(); // Send the request
+        }
+
         this.state = {
             navPath: 'HomeDrawer',
         };
+
+        this.username = "";
+        this.password = "";
 
     }
     setNavigation(naviVal) {
@@ -26,7 +76,7 @@ export class Login extends React.Component {
                 });
               break;
             case '1':
-                //console.log('HomeDrawer');
+                console.log('HomeDrawer has been called');
                 this.setState({
                     navPath: 'HomeDrawer',
                 });
@@ -66,6 +116,7 @@ export class Login extends React.Component {
                             label={'Username'}
                             // this is applied as active border and label color
                             activeColor={'#00EBBE'}
+                            onChangeText={(username) => this.username = (username)}
                             // active border height
                             borderHeight={2}
                             inputPadding={16}
@@ -77,6 +128,7 @@ export class Login extends React.Component {
                             label={'Password'}
                             // this is applied as active border and label color
                             activeColor={'#A537FD'}
+                            onChangeText={(password) => this.password = (password)}
                             // active border height
                             borderHeight={2}
                             inputPadding={16}
@@ -90,7 +142,7 @@ export class Login extends React.Component {
 
                         <TouchableOpacity 
                             style={styles.buttonLogin}
-                            onPress={() => this.props.navigation.navigate(this.state.navPath)}>
+                            onPress={() => this.toState()}>
                             <LinearGradient
                                 colors={['#A537FD', '#00EBBE']}
                                 start={{ x: 0, y: 0 }}
