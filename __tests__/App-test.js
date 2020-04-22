@@ -1,14 +1,13 @@
-/**
- * @format
- */
-
-import 'react-native';
-import React from 'react';
-import App from '../App';
-
-// Note: test renderer must be required after react-native.
+import * as React from 'react';
 import renderer from 'react-test-renderer';
+import WaitTime from '../WaitList'
 
-it('renders correctly', () => {
-  renderer.create(<App />);
+
+it(`renders correctly`, () => {
+//   const tree = renderer.create(<Text>Snapshot test!</Text>).toJSON();
+
+//   expect(tree).toMatchSnapshot();
+
+    const tree = renderer.create(<WaitTime>Test</WaitTime>)
+    expect(tree).toMatch(1)
 });

@@ -4,6 +4,7 @@ import {Alert} from 'react-native';
 import {Login} from './pages/Login';
 import {UserLanding} from './pages/UserLanding';
 import {BarList} from './pages/BarList';
+import {BarInfo} from './pages/BarInfo';
 import {Settings} from './pages/Settings';
 import {ManagerLanding} from './pages/ManagerLanding';
 import {ManagerDeals} from './pages/ManagerDeals';
@@ -117,6 +118,7 @@ export default function App() {
         <Stack.Screen name="HomeDrawer" component={HomeDrawer}/>
         <Stack.Screen name="ManagerNav" component={ManagerNav}/>
         <Stack.Screen name="BouncerNav" component={BouncerLanding}/>
+        <Stack.Screen name="BarInfo" component={BarInfo} />
       </Stack.Navigator>
     </NavigationContainer>
   );
