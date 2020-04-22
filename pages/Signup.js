@@ -3,110 +3,72 @@ import { Dimensions, Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, V
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Isao } from 'react-native-textinput-effects';
-import {flushStorage, logCurrentStorage, storeData} from './Storage';
+
 import SwitchSelector from 'react-native-switch-selector';
 
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
-const ENDPOINT = "https://uw-crowd-control.herokuapp.com/login";
-//const windowHeight = Dimensions.get('window').height;
+const ENDPOINT = "https://uw-crowd-control.herokuapp.com/addUser";
 
-export class Login extends React.Component {
+export class Signup extends React.Component {
     constructor(props) {
         super(props);
 
-        // This removes all logged in users
-        // currently, we do not keep in memory whether or not 
-        // a user is logged in, but this ensures that they
-        // are not when if they reach this page
-        //  flushStorage(); 
-
-        this.toState = function(){
-            // API docs: https://stoplight.io/p/docs/gh/kroat/crowd-control-api
-
-            // This is the endpoint api
-            const URL = `https://uw-crowd-control.herokuapp.com/login?email=${this.username}&password=${this.password}&key=su8tpE6D2gh`;
-            
-            // Wrapping everything into async and using await allows for code to run procedurally
-            // I couldn't get fetch to work asyncrouslly in another class
-            // so there's proabably a better way to do this 
-            const request = async () => {
-                const response = await fetch(URL); // Send the request
-                const json = await response.json(); // Jsonify
-                /*
-                Expected JSON response for a successful login:
+        // Contains logic to add users
+        // Currently only regular users are implimented
+        // 
+        // We may have to add additional screens for bouncers and managers
+        // For bouncers, we need them to input their linkedBar (Manager's email)
+        // And for Managers, we need their bar name, bar description, bar  
+        this.continueSignup = function(){
+            // Regular user signup 
+            if(this.state.navPath === 'HomeDrawer'){
+                // Check that information exists in all forms 
+                if([this.email, this.password, this.confirmPassword, this.city].includes(""))
                 {
-                    "Result": true,
-                    "Status": "1,2,or 3 (Integer)",
-                    "linkedBar": "bar owner's email",
-                    "city": "User's city"
+                    alert("Not all forms filled") 
+                    return;  
                 }
-                */
-                const result = Boolean(await json["Result"]); // Result stores (true/false) for whether or not a user exists
-                
-                // Print it out
-                console.log(`User attempted login (${this.username},${this.password}) ~ got response: ${result} (This user ${result ? "exists" : "doesn't exist"})`);
-                console.log("Full JSON Object: ", json)
-                // Make sure that there is no local storage
-                flushStorage(); 
+                if(this.password != this.confirmPassword){
+                    alert("Passwords do not match")
+                    return;
+                }
 
-                if(result || 1) // Case in which the user exists (just remove || 1)
-                {
+                // Craft the endpoint
+                const url = `${ENDPOINT}?email=${this.email}&password=${this.password}&city=${this.city}&status=1&key=su8tpE6D2gh`;
 
-                    // Note, the JSON response will return the status, which automatically can select
-                    // the intended state (1=User, 2=Bouncer, 3=Owner)
-                    let intendedStateFromJson = null;
-
-                    // ** This is a real successful login **
-                    // As of now, we can ignore unsuccessful logins 
-                    // and let the user enter the main screen regardless
-                    if(result){
-                        // Map our react status to backend statuses (1-3)
-                        intendedStateFromJson = parseInt(json["Status"]);
-                        switch(intendedStateFromJson){
-                            case 1:
-                                this.setState({
-                                    navPath: 'HomeDrawer',
-                                });
-                            break;
-                            case 2:
-                                this.setState({
-                                    navPath: 'BouncerNav',
-                                });
-                            break;
-                            case 3:
-                                this.setState({
-                                    navPath: 'ManagerNav',
-                                });
-                            break; 
-                        } 
-                        // Similar to sharedPreferences in android
-                        // however there are some bugs so i will comment this out
-                        // storeData(this.email, this.state.navPath);
-                        this.setNavigation(intendedStateFromJson); 
-                        this.props.navigation.navigate(this.state.navPath);
-                    }
- 
-                    // Catch-all, we can remove this for demo-time
-                    if(this.state == null){
-                        navPath: 'HomeDrawer';
-                        return this.props.navigation.navigate(this.state.navPath);
+                // Send the request
+                const attemptAddUser = async () => {
+                    const response = await fetch(url); // Send the request
+                    const json = await response.json(); // Jsonify
+                    // Unless there is a catastrophic event in the backend, ['Result'] will always
+                    // be a key
+                    if(!Boolean(json["Result"])){
+                        // If `UNIQUE` is in the error message, it's because somebody already took the email
+                        alert(`Error in signing up.\nReason: ${json["Reason"].includes("UNIQUE") ? "User already exists" : json["Reason"]}`);
                     }else{
-                        return this.props.navigation.navigate(this.state.navPath);
+                        // Everything worked!
+                        alert(`Successfully added ${this.email}`);
+                        // We know this is a regular user, we can continue 
+                        this.setNavigation('HomeDrawer');
                     }
                 }
-                // Need to add: case in which a user does not exist
-                // Popups for unsuccessful logins
+                attemptAddUser();
+
+            }else{
+                alert("This can only add regular users for now");
             }
-            request(); // Send the request
         }
 
         this.state = {
-            navPath: 'HomeDrawer',
+            navPath: 'HomeDrawer'
         };
 
-        this.username = ""; // says username, means email
+        this.email = "";
         this.password = "";
+        this.confirmPassword = "";
+        this.city = "";
 
     }
 
@@ -119,8 +81,7 @@ export class Login extends React.Component {
                     navPath: 'ManagerNav',
                 });
               break;
-            case '1':
-                console.log('HomeDrawer has been called');
+            case '1': 
                 this.setState({
                     navPath: 'HomeDrawer',
                 });
@@ -156,11 +117,12 @@ export class Login extends React.Component {
                     style={styles.loginBox}
                     behavior={'height'}>
                     <View style={styles.loginBoxInterior}>
+
                         <Isao
                             label={'Email'}
                             // this is applied as active border and label color
                             activeColor={'#00EBBE'}
-                            onChangeText={(username) => this.username = (username)}
+                            onChangeText={(email) => this.email = (email)}
                             // active border height
                             borderHeight={2}
                             inputPadding={16}
@@ -168,27 +130,73 @@ export class Login extends React.Component {
                             // this is applied as passive border and label color
                             passiveColor={'#dadada'}
                         />
+
+                        <Isao
+                            label={'City'}
+                            // this is applied as active border and label color
+                            activeColor={'#A537FD'}
+                            onChangeText={(city) => this.city = (city)}
+                            // active border height
+                            borderHeight={2}
+                            inputPadding={16}
+                            labelHeight={20}
+                            // this is applied as passive border and label color
+                            passiveColor={'#dadada'}
+                        />
+
                         <Isao
                             label={'Password'}
                             // this is applied as active border and label color
-                            activeColor={'#A537FD'}
+                            activeColor={'#00EBBE'}
                             onChangeText={(password) => this.password = (password)}
                             // active border height
                             borderHeight={2}
                             inputPadding={16}
+                            labelHeight={20}
                             secureTextEntry={true}
+                            // this is applied as passive border and label color
+                            passiveColor={'#dadada'}
+                        />
+
+                        <Isao
+                            label={'Confirm Password'}
+                            // this is applied as active border and label color
+                            activeColor={'#00EBBE'}
+                            onChangeText={(confirmPassword) => this.confirmPassword = (confirmPassword)}
+                            // active border height
+                            secureTextEntry={true}
+                            borderHeight={2}
+                            inputPadding={16}
                             labelHeight={20}
                             // this is applied as passive border and label color
                             passiveColor={'#dadada'}
                         />
-                    </View>
-                </KeyboardAvoidingView>
-                <View style={{flex:0.25, justifyContent:'center', alignItems:'center', backgroundColor: 'black'}}>
 
+                    </View>
+
+                </KeyboardAvoidingView>
+                <View style={styles.baseBorder}>
+                    <SwitchSelector
+                        initial={1}
+                        onPress={value => this.setNavigation(value)}
+                        textColor={'#A537FD'} //'#7a44cf'
+                        selectedColor={'#FFF'}
+                        buttonColor={'#A537FD'}
+                        borderColor={'#A537FD'}
+                        backgroundColor={'#000'}
+                        hasPadding = {true}
+                        options={[
+                            { label: 'Manager', value: '0'},
+                            { label: 'User', value: '1'},
+                            { label: 'Bouncer', value: '2'},
+                        ]}
+                        />
+                </View>  
+                <View style={{flex:0.25, justifyContent:'center', alignItems:'center', backgroundColor: 'black'}}>
 
                         <TouchableOpacity 
                             style={styles.buttonLogin}
-                            onPress={() => this.toState()}>
+                            onPress={() => this.continueSignup()}>
                             <LinearGradient
                                 colors={['#A537FD', '#00EBBE']}
                                 start={{ x: 0, y: 0 }}
@@ -196,29 +204,14 @@ export class Login extends React.Component {
                                 style={styles.buttonLoginGrad}>
                                     <Text
                                         style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
-                                        Login
-                                    </Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            style={styles.buttonSignup}
-                            onPress={() => this.props.navigation.navigate('Signup')}>
-                            <LinearGradient
-                                colors={['#A537FD', '#00EBBE']}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.buttonLoginGrad}>
-                                    <Text
-                                        style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
-                                        Sign Up
+                                        {this.state.navPath == 'HomeDrawer' ? "Signup":"Continue"}
                                     </Text>
                             </LinearGradient>
                         </TouchableOpacity>
 
 
                 </View>
-
+            
             </View>
         );
     }
@@ -263,21 +256,21 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex:0.5,
-    alignItems:'center',
+    alignItems:'stretch',
     justifyContent:'flex-end',
   },
   titleContainer: {
-    flex:0.1,
+    flex:0.15,
     alignItems:'center',
     justifyContent:'center',
   },
   logoImg: {
-    width: 150,
-    height: 174,
+    width: 75,
+    height: 87,
   },
   loginBox: {
-      flex: 0.4,
-      width: windowWidth * 0.7,
+      flex: 1.25,
+      width: windowWidth * 0.7, 
       marginBottom: 15,
       backgroundColor: '#2D2D2D',
       borderRadius: 20,
@@ -287,7 +280,7 @@ const styles = StyleSheet.create({
       alignItems:'center',
   },
   loginBoxInterior: {
-    flex: 0.95,
+    flex: 1,
     width: windowWidth * 0.68,
     backgroundColor: '#2D2D2D',
     borderRadius: 19,
