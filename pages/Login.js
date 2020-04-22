@@ -105,7 +105,7 @@ export class Login extends React.Component {
             navPath: 'HomeDrawer',
         };
 
-        this.username = "";
+        this.username = ""; // says username, means email
         this.password = "";
 
     }
