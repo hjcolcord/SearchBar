@@ -5,6 +5,7 @@ import {Login} from './pages/Login';
 import {Signup} from './pages/Signup'
 import {UserLanding} from './pages/UserLanding';
 import {BarList} from './pages/BarList';
+import {BarInfo} from './pages/BarInfo';
 import {Settings} from './pages/Settings';
 import {ManagerLanding} from './pages/ManagerLanding';
 import {ManagerDeals} from './pages/ManagerDeals';
@@ -118,6 +119,7 @@ export default function App() {
         <Stack.Screen name="ManagerNav" component={ManagerNav}/>
         <Stack.Screen name="BouncerNav" component={BouncerLanding}/>
         <Stack.Screen name="Signup" component={Signup}/>
+        <Stack.Screen name="BarInfo" component={BarInfo} />
       </Stack.Navigator>
     </NavigationContainer>
   );
