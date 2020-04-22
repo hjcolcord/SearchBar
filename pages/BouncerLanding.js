@@ -66,14 +66,29 @@ export class BouncerLanding extends React.Component {
                 </View>
 
                 <View style={styles.mainContainer}>
+                <Image source={require('../assets/addition.png')} />
+                <Image source={require('../assets/subtraction.png')} />
                     <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                        Bouncer Landing
+                        {"Capacity: " + getPatrons() +" / " + getCapacity()}
                     </Text>
                 </View>
             </View>
             );
         }
     }
+
+    //Gets the patrons for the current bar
+    function getPatrons(){
+
+        return 0;
+    }
+
+    //Gets the capacity for the current bar
+    function getCapacity() {
+        
+        return 0;
+    }
+    
 const styles = StyleSheet.create({
     container: {
         flex: 1,
