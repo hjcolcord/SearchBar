@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {Alert} from 'react-native';
 import {Login} from './pages/Login';
+import {Signup} from './pages/Signup'
 import {UserLanding} from './pages/UserLanding';
 import {BarList} from './pages/BarList';
 import {Settings} from './pages/Settings';
@@ -14,7 +15,6 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 
 Icon.loadFont();
 MaterialIcon.loadFont();
@@ -117,6 +117,7 @@ export default function App() {
         <Stack.Screen name="HomeDrawer" component={HomeDrawer}/>
         <Stack.Screen name="ManagerNav" component={ManagerNav}/>
         <Stack.Screen name="BouncerNav" component={BouncerLanding}/>
+        <Stack.Screen name="Signup" component={Signup}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
