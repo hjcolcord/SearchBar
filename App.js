@@ -118,11 +118,8 @@ export default function App() {
         <Stack.Screen name="HomeDrawer" component={HomeDrawer}/>
         <Stack.Screen name="ManagerNav" component={ManagerNav}/>
         <Stack.Screen name="BouncerNav" component={BouncerLanding}/>
-<<<<<<< HEAD
         <Stack.Screen name="BarInfo" component={BarInfo} />
-=======
         <Stack.Screen name="Signup" component={Signup}/>
->>>>>>> bd25cd72bcecc0c1f2e1e19680b6ccc0787010c7
       </Stack.Navigator>
     </NavigationContainer>
   );
