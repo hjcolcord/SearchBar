@@ -3,7 +3,8 @@ import { Dimensions, Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, V
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Isao } from 'react-native-textinput-effects';
-import {flushStorage, logCurrentStorage, storeData} from './Storage';
+import {flushStorage, logCurrentStorage} from './Storage'; 
+import {AsyncStorage} from 'react-native';
 import SwitchSelector from 'react-native-switch-selector';
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,6 +24,10 @@ export class Login extends React.Component {
 
         this.toState = function(){
             // API docs: https://stoplight.io/p/docs/gh/kroat/crowd-control-api
+
+            // Clear all local storage
+            AsyncStorage.clear();
+            logCurrentStorage();
 
             // This is the endpoint api
             const URL = `https://uw-crowd-control.herokuapp.com/login?email=${this.username}&password=${this.password}&key=su8tpE6D2gh`;
@@ -63,6 +68,7 @@ export class Login extends React.Component {
                     if(result){
                         // Map our react status to backend statuses (1-3)
                         intendedStateFromJson = parseInt(json["Status"]);
+                        AsyncStorage.setItem('city', json['city']);
                         switch(intendedStateFromJson){
                             case 1:
                                 this.setState({
@@ -70,6 +76,7 @@ export class Login extends React.Component {
                                 });
                             break;
                             case 2:
+                                AsyncStorage.setItem('linkedBar', json['linkedBar']);
                                 this.setState({
                                     navPath: 'BouncerNav',
                                 });
