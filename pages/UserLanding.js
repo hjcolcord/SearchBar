@@ -2,18 +2,45 @@ import React from 'react';
 import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {flushStorage, logCurrentStorage} from './Storage'; 
 import MapView from 'react-native-maps';
+import {AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const ENDPOINT = "https://uw-crowd-control.herokuapp.com/findBars";
 
 export class UserLanding extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
+            bars: null // Holds a JSON object of all the bars
         };
+        
+        // Get all the bars upon loading
+        // Can also be called to update bars
+        // (Currently only called once when building UserLanding)
+        const getBars = async() => {
+            AsyncStorage.getItem('city', (error, city) => {
+                if(city == null){
+                    console.log("Warning, there is no existing city in AsyncStorage, no API call will be made.")
+                }else{ 
+                    const request = async () => {
+                        const response = await fetch(`${ENDPOINT}?city=${city}`); 
+                        this.setState({
+                            bars: await response.json(),
+                        });    
+                        AsyncStorage.setItem("bars", JSON.stringify(this.state.bars))
+                    } 
+                    request();
+                }
+            }); 
+        };
+        getBars()
+
         this.notchHeight = 30;
 
     }
@@ -74,7 +101,8 @@ export class UserLanding extends React.Component {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                         }}
-                    />
+                    > 
+                    </MapView>
                 </View>
                 <View style={styles.infoSection}>
                     <TouchableOpacity
