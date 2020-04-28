@@ -22,6 +22,7 @@ export class Login extends React.Component {
         //  flushStorage(); 
 
         this.toState = function(){
+            //console.log(this.username + " " + this.password);
             // API docs: https://stoplight.io/p/docs/gh/kroat/crowd-control-api
 
             // This is the endpoint api
@@ -31,6 +32,7 @@ export class Login extends React.Component {
             // I couldn't get fetch to work asyncrouslly in another class
             // so there's proabably a better way to do this 
             const request = async () => {
+                
                 const response = await fetch(URL); // Send the request
                 const json = await response.json(); // Jsonify
                 /*
@@ -43,7 +45,7 @@ export class Login extends React.Component {
                 }
                 */
                 const result = Boolean(await json["Result"]); // Result stores (true/false) for whether or not a user exists
-                
+
                 // Print it out
                 console.log(`User attempted login (${this.username},${this.password}) ~ got response: ${result} (This user ${result ? "exists" : "doesn't exist"})`);
                 console.log("Full JSON Object: ", json)
@@ -63,7 +65,7 @@ export class Login extends React.Component {
                     if(result){
                         // Map our react status to backend statuses (1-3)
                         intendedStateFromJson = parseInt(json["Status"]);
-                        switch(intendedStateFromJson){
+                        switch (intendedStateFromJson){
                             case 1:
                                 this.setState({
                                     navPath: 'HomeDrawer',
@@ -78,8 +80,8 @@ export class Login extends React.Component {
                                 this.setState({
                                     navPath: 'ManagerNav',
                                 });
-                            break; 
-                        } 
+                            break;
+                        }
                         // Similar to sharedPreferences in android
                         // however there are some bugs so i will comment this out
                         // storeData(this.email, this.state.navPath);
@@ -88,10 +90,10 @@ export class Login extends React.Component {
                     }
  
                     // Catch-all, we can remove this for demo-time
-                    if(this.state == null){
+                    if (this.state == null){
                         navPath: 'HomeDrawer';
                         return this.props.navigation.navigate(this.state.navPath);
-                    }else{
+                    } else {
                         return this.props.navigation.navigate(this.state.navPath);
                     }
                 }

@@ -7,15 +7,75 @@ import Icon from 'react-native-vector-icons/Entypo';
 
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+//const windowHeight = Dimensions.get('window').height;
 
 export class UserLanding extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            whiskeysWait: 0,
+            lucilleWait: 0,
+            luckysWait: 0,
+            kkWait: 0,
+            uuWait: 0,
+            selectedBar: 'Select a bar!',
+            selectedCapacity: 100,
+            selectedOccupancy: 56,
+            capacityString: '',
+            selectedAddress: '',
+            dealButton: 0,
         };
         this.notchHeight = 30;
-
+    }
+    selectBar = (barVal) => {
+        //let string = 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + {this.state.selectedCapacity};
+        switch (barVal){
+            case 0:
+                this.setState({
+                    selectedBar: "Whiskey Jack's Saloon",
+                    selectedCapacity: 100,
+                    selectedOccupancy: 56,
+                    dealButton: 60,
+                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
+                });
+            break;
+            case 1:
+                this.setState({
+                    selectedBar: 'Lucille',
+                    selectedCapacity: 100,
+                    selectedOccupancy: 56,
+                    dealButton: 60,
+                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
+                });
+            break;
+            case 2:
+                this.setState({
+                    selectedBar: "Lucky's 1313",
+                    selectedCapacity: 100,
+                    selectedOccupancy: 56,
+                    dealButton: 60,
+                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
+                });
+            break;
+            case 3:
+                this.setState({
+                    selectedBar: 'Kollege Klub',
+                    selectedCapacity: 100,
+                    selectedOccupancy: 56,
+                    dealButton: 60,
+                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
+                });
+            break;
+            case 4:
+                this.setState({
+                    selectedBar: 'The Double U',
+                    selectedCapacity: 100,
+                    selectedOccupancy: 56,
+                    dealButton: 60,
+                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
+                });
+            break;
+        }
     }
     render(){
         if (Platform.OS === 'android') {
@@ -58,9 +118,7 @@ export class UserLanding extends React.Component {
                                     end={{ x: 1, y: 0 }}
                                     style={styles.lineHighlight}/>
                             </View>
-                            <View style = {styles.headerSide}>
-                                
-                            </View>
+                            <View style = {styles.headerSide}/>
 
                         </LinearGradient>
                 </View>
@@ -71,15 +129,59 @@ export class UserLanding extends React.Component {
                         initialRegion={{
                         latitude: 43.075173,
                         longitude: -89.394829,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                        }}
-                    />
+                        latitudeDelta: 0.0422,
+                        longitudeDelta: 0.0121,
+                        }}>
+                        <MapView.Marker
+                            onPress={() => this.selectBar(0)}
+                            coordinate={{latitude: 43.075173,
+                            longitude: -89.394829}}
+                            title={"Whiskey Jack's"}
+                            description={'Wait Time: ' + this.state.whiskeysWait + ' minutes'}
+                        />
+                        <MapView.Marker
+                            onPress={() => this.selectBar(1)}
+                            coordinate={{latitude: 43.074549,
+                            longitude: -89.381452}}
+                            title={'Lucille'}
+                            description={'Wait Time: ' + this.state.lucilleWait + ' minutes'}
+                        />
+                        <MapView.Marker
+                            onPress={() => this.selectBar(2)}
+                            coordinate={{latitude: 43.067800,
+                            longitude: -89.408182}}
+                            title={"Lucky's"}
+                            description={'Wait Time: ' + this.state.luckysWait + ' minutes'}
+                        />
+                        <MapView.Marker
+                            onPress={() => this.selectBar(3)}
+                            coordinate={{latitude: 43.075787,
+                            longitude: -89.397064}}
+                            title={'Kollege Klub'}
+                            description={'Wait Time: ' + this.state.kkWait + ' minutes'}
+                        />
+                        <MapView.Marker
+                            onPress={() => this.selectBar(4)}
+                            coordinate={{latitude: 43.073440,
+                            longitude: -89.396792}}
+                            title={'The Double U'}
+                            description={'Wait Time: ' + this.state.uuWait + ' minutes'}
+                        />
+                    </MapView>
                 </View>
                 <View style={styles.infoSection}>
+                    <View style={styles.barInfoview}>
+                        <Text
+                            style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
+                            {this.state.selectedBar}
+                        </Text>
+                        <Text
+                            style={{color:'#FFF', fontWeight:'normal', fontSize:18}}>
+                            {this.state.capacityString}
+                        </Text>
+                    </View>
                     <TouchableOpacity
-                        style={styles.buttonLogin}
-                        onPress={() => this.props.navigation.navigate('Login')}>
+                        style={[styles.buttonLogin,{height: this.state.dealButton}]}>
                         <LinearGradient
                             colors={['#A537FD', '#00EBBE']}
                             start={{ x: 0, y: 0 }}
@@ -87,7 +189,7 @@ export class UserLanding extends React.Component {
                             style={styles.buttonLoginGrad}>
                                 <Text
                                     style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
-                                    Back
+                                    View Deals
                                 </Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -139,7 +241,7 @@ const styles = StyleSheet.create({
         width: windowWidth,
         backgroundColor: '#000',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
     mapContainer: {
         flex: 0.7,
@@ -153,19 +255,25 @@ const styles = StyleSheet.create({
     },
     buttonLogin: {
         width: windowWidth * 0.8,
-        height: 60,
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '#FFF',
         shadowRadius:5,
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.7,
-      },
+    },
     buttonLoginGrad: {
         width: windowWidth * 0.7,
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 20,
-      },
+    },
+    barInfoview: {
+        alignItems:'center',
+        paddingTop: 5,
+        width: windowWidth,
+        height: '40%',
+        backgroundColor: '#000',
+    },
 });

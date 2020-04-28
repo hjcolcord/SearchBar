@@ -112,7 +112,7 @@ function ManagerNav() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="Login">
+      <Stack.Navigator headerMode="none" initialRouteName="HomeDrawer">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="HomeDrawer" component={HomeDrawer}/>
         <Stack.Screen name="ManagerNav" component={ManagerNav}/>
