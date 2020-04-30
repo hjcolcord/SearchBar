@@ -2,16 +2,20 @@ import React from 'react';
 import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {flushStorage, logCurrentStorage} from './Storage';
 import MapView from 'react-native-maps';
+import {AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 
 const windowWidth = Dimensions.get('window').width;
-//const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height;
+const ENDPOINT = 'https://uw-crowd-control.herokuapp.com/findBars';
 
 export class UserLanding extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             whiskeysWait: 0,
             lucilleWait: 0,
@@ -24,65 +28,68 @@ export class UserLanding extends React.Component {
             capacityString: '',
             selectedAddress: '',
             dealButton: 0,
+            bars: null, // Holds a JSON object of all the bars
         };
+
+        // Get all the bars upon loading
+        // Can also be called to update bars
+        // (Currently only called once when building UserLanding)
+        const getBars = async() => {
+            AsyncStorage.getItem('city', (error, city) => {
+                if (city == null){
+                    console.log('Warning, there is no existing city in AsyncStorage, no API call will be made.');
+                } else {
+                    const request = async () => {
+                        const response = await fetch(`${ENDPOINT}?city=${city}`);
+                        this.setState({
+                            bars: await response.json(),
+                        });
+                        AsyncStorage.setItem('bars', JSON.stringify(this.state.bars));
+                    };
+                    request();
+                }
+            });
+        };
+        getBars();
+
         this.notchHeight = 30;
     }
     selectBar = (barVal) => {
         //let string = 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + {this.state.selectedCapacity};
-        switch (barVal){
-            case 0:
-                this.setState({
-                    selectedBar: "Whiskey Jack's Saloon",
-                    selectedCapacity: 100,
-                    selectedOccupancy: 56,
-                    dealButton: 60,
-                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
-                });
-            break;
-            case 1:
-                this.setState({
-                    selectedBar: 'Lucille',
-                    selectedCapacity: 100,
-                    selectedOccupancy: 56,
-                    dealButton: 60,
-                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
-                });
-            break;
-            case 2:
-                this.setState({
-                    selectedBar: "Lucky's 1313",
-                    selectedCapacity: 100,
-                    selectedOccupancy: 56,
-                    dealButton: 60,
-                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
-                });
-            break;
-            case 3:
-                this.setState({
-                    selectedBar: 'Kollege Klub',
-                    selectedCapacity: 100,
-                    selectedOccupancy: 56,
-                    dealButton: 60,
-                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
-                });
-            break;
-            case 4:
-                this.setState({
-                    selectedBar: 'The Double U',
-                    selectedCapacity: 100,
-                    selectedOccupancy: 56,
-                    dealButton: 60,
-                    capacityString: 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + this.state.selectedCapacity,
-                });
-            break;
-        }
+        this.setState({
+            selectedBar: this.state.bars[barVal].bar,
+            dealButton: 60,
+            capacityString: 'Current Occupancy: ' + this.state.bars[barVal].patrons + '/' + this.state.bars[barVal].capacity,
+        });
     }
+
+    markBarsOnMap() {
+        let mapMarkers = [];
+        if (this.state.bars !== null) {
+            for (let i = 0; i < this.state.bars.length; i++) {
+                mapMarkers.push(
+                    <MapView.Marker
+                        key= {i}
+                        onPress={() => this.selectBar(i)}
+                        coordinate={{latitude: parseFloat(this.state.bars[i].lat),
+                        longitude: parseFloat(this.state.bars[i].long)}}
+                        title={this.state.bars[i].bar}
+                        description={'Current Capacity ' + this.state.bars[i].patrons + '/' + this.state.bars[i].capacity}
+                    />
+                );
+            }
+        }
+        return mapMarkers;
+    }
+
     render(){
+        console.log(this.state.bars);
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }
         return (
             <View style={styles.container}>
+                <StatusBar backgroundColor={'#000'} barStyle={'light-content'}/>
                 <View style={[styles.notchPadding, {height:this.notchHeight}]}>
                     <LinearGradient
                         colors={['#000', '#222']}
@@ -132,41 +139,9 @@ export class UserLanding extends React.Component {
                         latitudeDelta: 0.0422,
                         longitudeDelta: 0.0121,
                         }}>
-                        <MapView.Marker
-                            onPress={() => this.selectBar(0)}
-                            coordinate={{latitude: 43.075173,
-                            longitude: -89.394829}}
-                            title={"Whiskey Jack's"}
-                            description={'Wait Time: ' + this.state.whiskeysWait + ' minutes'}
-                        />
-                        <MapView.Marker
-                            onPress={() => this.selectBar(1)}
-                            coordinate={{latitude: 43.074549,
-                            longitude: -89.381452}}
-                            title={'Lucille'}
-                            description={'Wait Time: ' + this.state.lucilleWait + ' minutes'}
-                        />
-                        <MapView.Marker
-                            onPress={() => this.selectBar(2)}
-                            coordinate={{latitude: 43.067800,
-                            longitude: -89.408182}}
-                            title={"Lucky's"}
-                            description={'Wait Time: ' + this.state.luckysWait + ' minutes'}
-                        />
-                        <MapView.Marker
-                            onPress={() => this.selectBar(3)}
-                            coordinate={{latitude: 43.075787,
-                            longitude: -89.397064}}
-                            title={'Kollege Klub'}
-                            description={'Wait Time: ' + this.state.kkWait + ' minutes'}
-                        />
-                        <MapView.Marker
-                            onPress={() => this.selectBar(4)}
-                            coordinate={{latitude: 43.073440,
-                            longitude: -89.396792}}
-                            title={'The Double U'}
-                            description={'Wait Time: ' + this.state.uuWait + ' minutes'}
-                        />
+
+                        {this.markBarsOnMap()}
+
                     </MapView>
                 </View>
                 <View style={styles.infoSection}>
@@ -188,7 +163,7 @@ export class UserLanding extends React.Component {
                             end={{ x: 1, y: 0 }}
                             style={styles.buttonLoginGrad}>
                                 <Text
-                                    style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
+                                    style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
                                     View Deals
                                 </Text>
                         </LinearGradient>

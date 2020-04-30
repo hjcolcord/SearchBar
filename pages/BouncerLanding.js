@@ -4,20 +4,88 @@ import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {flushStorage, logCurrentStorage, storeData} from './Storage'; 
+import {AsyncStorage} from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const ENDPOINT = "https://uw-crowd-control.herokuapp.com/";
+
 export class BouncerLanding extends React.Component {
     constructor(props) {
         super(props);
+
+        // Hold patrons/capacity in a set
         this.state = {
+            patrons:0,
+            capacity:0
         };
         this.notchHeight = 30;
 
+        // Method to call that get the current # of patrons & capacity
+        // once a bouncer loggs in
+        // Calls /getBarDetails endpoint
+        this.firstTimeUpdate = function(){
+            let url = null; 
+            let parentBar = null;
+            // It is expected that linkedBar will now be a valid key
+            AsyncStorage.getItem('linkedBar', (error, result) => {
+                url = `${ENDPOINT}getBarDetails?bar=${result}`;
+                console.log(`Making request to ${url}`);
+                const request = async () => {
+                    const response = await fetch(url); 
+                    const json = await response.json();  
+                    this.setState({
+                        patrons:json["People"],
+                        capacity:json["Capacity"],
+                    })
+                }
+                request();
+            }); 
+        }; 
+        this.firstTimeUpdate(); // Call the first-time update during construction
+
+        // Local method to incriment/decrement
+        this.callAPI = function(plus){
+            let url = null; 
+            let parentBar = null; // This will hold the owner's bar
+            AsyncStorage.getItem('linkedBar', (error, result) => {
+                // Build the endpoint
+                if(plus){
+                    url = `${ENDPOINT}plus?bar=${result}`;
+                }else{
+                    url = `${ENDPOINT}minus?bar=${result}`;
+                } 
+                // Wrap everything in a JS promise
+                const request = async () => {
+                    const response = await fetch(url); 
+                    const json = await response.json();
+                    // json["Result"] holds whether or not call succeeded
+                    const result = Boolean(await json["Result"]); 
+                    if(result){
+                        // Update states
+                        this.setState({
+                            patrons:json["Patrons"],
+                            capacity:json["Capacity"],
+                        })
+                    }else{
+                        // Back-end does error checking, so this may be a user error (incrimenting above capacity)
+                        const reason = await json["Reason"];
+                        reason.includes("Capacity") ? alert("Cannot have patrons above capacity or below zero") : alert(`Unexpected error: ${reason}`);
+                    }
+                }
+                // Send the request
+                request();
+            }); 
+        }
     }
+
+
     render(){
+
+
+        logCurrentStorage();
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }
@@ -66,14 +134,21 @@ export class BouncerLanding extends React.Component {
                 </View>
 
                 <View style={styles.mainContainer}>
+                <TouchableOpacity onPress={()=> this.callAPI(true)}>
+                <Image source={require('../assets/addition.png')} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=> this.callAPI(false)}>
+                <Image source={require('../assets/subtraction.png')} />
+                </TouchableOpacity>
                     <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                        Bouncer Landing
+                        {"Capacity: " + this.state.patrons +" / " + this.state.capacity}
                     </Text>
                 </View>
             </View>
             );
         }
     }
+    
 const styles = StyleSheet.create({
     container: {
         flex: 1,
