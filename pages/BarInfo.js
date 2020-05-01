@@ -57,43 +57,42 @@ export class BarInfo extends React.Component {
             </View>
             );
         }
-    }
 
-
-    function barFormat(info, props){
-        return (   
-        <View key={info} style={styles.buttonLogin, {borderRadius:50 ,padding: 30, margin: 10,backgroundColor: '#838383', width: windowWidth/1.2}}>
-            <Text style={{color: '#FFF', fontSize: 25}}>
-                {"Name: " + info}
-            </Text>
-            <Text style={{color: '#FFF', fontSize: 25}}>
-                {"Capacity: "}
-            </Text>
-            <Text style={{color: '#FFF', fontSize: 25}}>
-                {"Wait Time: "}
-            </Text>
-            <View style={{alignSelf: 'center'}}>
-                <TouchableOpacity 
-                    style={styles.buttonLogin}
-                    //TODO: Navigate to BarInfo landing and send specific bar info with it
-                    onPress={() => props.navigation.navigate("BarInfo")}>
-                    <LinearGradient
-                        colors={['#A537FD', '#00EBBE']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{width: windowWidth/1.5,
-                            height: windowHeight/13,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 100,
-                            marginTop: 10}}>
-                        <Text style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
-                            More Info
-                        </Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-            </View>
-        </View>);
+        barFormat(info){
+            return (   
+            <View key={info} style={styles.buttonLogin, {borderRadius:50 ,padding: 30, margin: 10,backgroundColor: '#838383', width: windowWidth/1.2}}>
+                <Text style={{color: '#FFF', fontSize: 25}}>
+                    {"Name: " + info}
+                </Text>
+                <Text style={{color: '#FFF', fontSize: 25}}>
+                    {"Capacity: "}
+                </Text>
+                <Text style={{color: '#FFF', fontSize: 25}}>
+                    {"Wait Time: "}
+                </Text>
+                <View style={{alignSelf: 'center'}}>
+                    <TouchableOpacity 
+                        style={styles.buttonLogin}
+                        //TODO: Navigate to BarInfo landing and send specific bar info with it
+                        onPress={() => this.props.navigation.navigate("BarInfo")}>
+                        <LinearGradient
+                            colors={['#A537FD', '#00EBBE']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={{width: windowWidth/1.5,
+                                height: windowHeight/13,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: 100,
+                                marginTop: 10}}>
+                            <Text style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
+                                More Info
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </View>
+            </View>);
+        }
     }
 
 BarInfo.navigationOptions = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MapView from 'react-native-maps';
@@ -13,6 +13,11 @@ export class Settings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            fname:"",
+            lname: "",
+            location:"",
+            password:""
+
         };
         this.notchHeight = 30;
 
@@ -64,14 +69,69 @@ export class Settings extends React.Component {
                 </View>
 
                 <View style={styles.mainContainer}>
-                    <Text style={{color: '#FFF'}}>
-                        Settings
+                    <Text style={styles.text}>
+                        First Name
                     </Text>
+                    <TextInput
+                        style={{fontSize: 30, textAlign: 'center', borderRadius:50, marginTop: 10 , height: windowHeight/12 ,backgroundColor: '#838383', width: windowWidth}}
+                        onChangeText={(text) => this.setState({fname: text})}
+                        value={this.state.fname}
+                    />
+                    <Text style={styles.text}>
+                        Last Name
+                    </Text>
+                    <TextInput
+                        style={{fontSize: 30, textAlign: 'center', borderRadius:50, marginTop: 10 , height: windowHeight/12 ,backgroundColor: '#838383', width: windowWidth}}
+                        onChangeText={(text) => this.setState({lname: text})}
+                        value={this.state.lname}
+                    />
+                    <Text style={styles.text}>
+                        Location
+                    </Text>
+                    <TextInput
+                        style={{fontSize: 30, textAlign: 'center', borderRadius:50, marginTop: 10 , height: windowHeight/12 ,backgroundColor: '#838383', width: windowWidth}}
+                        onChangeText={(text) => this.setState({location: text})}
+                        value={this.state.location}
+                    />
+                    <Text style={styles.text}>
+                        Password
+                    </Text>
+                    <TextInput
+                        style={{fontSize: 30, textAlign: 'center', borderRadius:50, marginTop: 10 , height: windowHeight/12 ,backgroundColor: '#838383', width: windowWidth}}
+                        onChangeText={(text) => this.setState({password: text})}
+                        value={this.state.password}
+                        secureTextEntry={true}
+                    />
+                    <TouchableOpacity 
+                    style={styles.buttonLogin}
+                    //TODO: Navigate to BarInfo landing and send specific bar info with it
+                    onPress={() => {saveInfo()}}
+                    >
+                    <LinearGradient
+                        colors={['#A537FD', '#00EBBE']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{width: windowWidth/1.5,
+                            height: windowHeight/13,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 100,
+                            marginTop: 10}}>
+                        <Text style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
+                            Save Changes
+                        </Text>
+                    </LinearGradient>
+                </TouchableOpacity>
                 </View>
             </View>
             );
         }
+
+        //Function that saves the new data in the backend
+    saveInfo() {
+        
     }
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -134,4 +194,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
       },
+      text: {
+        color:'#FFF', 
+        fontWeight:"bold", 
+        fontSize:30, 
+        textAlign:'left', 
+        alignSelf:'flex-start', 
+        marginLeft: 10
+      }
 });
