@@ -24,11 +24,12 @@ export class UserLanding extends React.Component {
             luckysWait: 0,
             kkWait: 0,
             uuWait: 0,
-            selectedBar: 'Select a bar!',
+            selectedBar: '',
             selectedBarVal: null,
             selectedCapacity: 100,
             selectedOccupancy: 56,
-            capacityString: '',
+            capacityString: 'Select a bar!',
+            waitTimeString: '',
             selectedAddress: '',
             dealButton: 0,
             bars: null, // Holds a JSON object of all the bars
@@ -67,6 +68,7 @@ export class UserLanding extends React.Component {
             selectedBarVal: barVal,
             dealButton: 60,
             capacityString: 'Current Occupancy: ' + this.state.bars[barVal].patrons + '/' + this.state.bars[barVal].capacity,
+            waitTimeString: 'Approximate Wait Time: ',
         });
     }
 
@@ -93,6 +95,7 @@ export class UserLanding extends React.Component {
         this.props.navigation.navigate('BarDetails', {
             barName: this.state.selectedBar,
             barVal: this.state.selectedBarVal,
+            location: this.state.bars[this.state.selectedBarVal].address,
           });
     }
 
@@ -114,6 +117,7 @@ export class UserLanding extends React.Component {
     }
 
     render(){
+        console.log(this.state.bars);
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }
@@ -208,25 +212,31 @@ export class UserLanding extends React.Component {
                             style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
                             {this.state.selectedBar}
                         </Text>
+                    </View>
+                    <View style={styles.greyBox}>
                         <Text
                             style={{color:'#FFF', fontWeight:'normal', fontSize:18}}>
                             {this.state.capacityString}
                         </Text>
+                        <Text
+                            style={{color:'#FFF', fontWeight:'normal', fontSize:18}}>
+                            {this.state.waitTimeString}
+                        </Text>
+                        <TouchableOpacity
+                            style={[styles.buttonLogin,{height: this.state.dealButton}]}
+                            onPress={this.goToBarDetails}>
+                            <LinearGradient
+                                colors={['#A537FD', '#00EBBE']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.buttonLoginGrad}>
+                                    <Text
+                                        style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
+                                        Deals and Details
+                                    </Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
-                        style={[styles.buttonLogin,{height: this.state.dealButton}]}
-                        onPress={this.goToBarDetails}>
-                        <LinearGradient
-                            colors={['#A537FD', '#00EBBE']}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.buttonLoginGrad}>
-                                <Text
-                                    style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
-                                    Deals and Details
-                                </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
                 </View>
             </View>
             );
@@ -307,7 +317,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         paddingTop: 5,
         width: windowWidth,
-        height: '40%',
+        height: '20%',
         backgroundColor: '#000',
     },
     searchDrop: {
@@ -322,5 +332,13 @@ const styles = StyleSheet.create({
         width: windowWidth * 0.6,
         borderBottomColor: '#FFF',
         borderBottomWidth: 1,
+    },
+    greyBox: {
+        width: windowWidth * 0.8,
+        height: '60%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#222',
+        borderRadius: 15
     },
 });

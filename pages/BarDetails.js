@@ -115,11 +115,49 @@ export class BarDetails extends React.Component {
 
                 <View style={styles.mainContainer}>
                     <Image
-                    style={{width: 300, height:300}}
+                        style={{width: 325, height:200, opacity: 0.7}}
                         source={this.getPath()}/>
+                    <View style={styles.barInfoSect}>
                         <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                            {this.props.route.params.barName}
+                            {this.props.route.params.barName}{'\n'}
                         </Text>
+                        <Text style={{width: '100%', color:'#FFF', fontWeight:'300', fontSize:20, textDecorationLine:'underline'}}>
+                            Hours
+                        </Text>
+                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
+                            Mon-Thur: {'\n'}
+                            Fri: {'\n'}
+                            Sat: {'\n'}
+                            Sun:
+                        </Text>
+                        <Text style={{width: '100%', color:'#FFF', fontWeight:'300', fontSize:20, textDecorationLine:'underline'}}>
+                            Location
+                        </Text>
+                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
+                        {this.props.route.params.location}
+                        </Text>
+                        <Text style={{width: '100%', color:'#FFF', fontWeight:'300', fontSize:20, textDecorationLine:'underline'}}>
+                            Deals
+                        </Text>
+                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
+                            Deal 1: {'\n'}
+                            Deal 2: {'\n'}
+                            Deal 3:
+                        </Text>
+                    </View>
+                    <TouchableOpacity
+                            style={styles.buttonLogin}>
+                            <LinearGradient
+                                colors={['#A537FD', '#00EBBE']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.buttonLoginGrad}>
+                                    <Text
+                                        style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
+                                        Events Calendar
+                                    </Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
                 </View>
             </View>
             );
@@ -176,7 +214,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingTop: 20,
+        paddingTop: 0,
     },
     map: {
         ...StyleSheet.absoluteFillObject,
@@ -186,6 +224,7 @@ const styles = StyleSheet.create({
         height: 60,
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 20,
         shadowColor: '#FFF',
         shadowRadius:5,
         shadowOffset: {width: 0, height: 1},
@@ -197,5 +236,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 20,
-      },
+    },
+    barInfoSect: {
+        width: windowWidth * 0.8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#222',
+        shadowColor: '#FFF',
+        shadowRadius:5,
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.7,
+        paddingBottom: 20,
+        paddingTop: 20,
+        paddingLeft: 10,
+        paddingRight: 10,
+        borderRadius: 15,
+    },
 });
