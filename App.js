@@ -4,6 +4,7 @@ import {Alert} from 'react-native';
 import {Login} from './pages/Login';
 import {Signup} from './pages/Signup'
 import {UserLanding} from './pages/UserLanding';
+import {BarDetails} from './pages/BarDetails';
 import {BarList} from './pages/BarList';
 import {BarInfo} from './pages/BarInfo';
 import {Settings} from './pages/Settings';
@@ -67,7 +68,7 @@ function HomeDrawer() {
         <Drawer.Screen 
             options={{drawerIcon: config => <Icon color={'#00EBBE'} size={23} name={'map'}/>}}
             name="Bar Map"
-            component={UserLanding}/>
+            component={HomeStack}/>
         <Drawer.Screen 
             options={{drawerIcon: config => <Icon color={'#00EBBE'} size={23} name={'list'}/>}}
             name="Bar List"
@@ -77,6 +78,15 @@ function HomeDrawer() {
             name="Settings"
             component={Settings}/>
       </Drawer.Navigator>
+  );
+}
+
+function HomeStack() {
+  return (
+    <Stack.Navigator headerMode="none" initialRouteName="Landing">
+      <Stack.Screen name="Landing" component={UserLanding} />
+      <Stack.Screen name="BarDetails" component={BarDetails}/>
+    </Stack.Navigator>
   );
 }
 
