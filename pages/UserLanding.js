@@ -3,7 +3,7 @@ import { Animated, Easing, Dimensions, Image, KeyboardAvoidingView, Platform, St
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {flushStorage, logCurrentStorage} from './Storage';
-import MapView from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -201,7 +201,6 @@ export class UserLanding extends React.Component {
                         latitudeDelta: 0.0422,
                         longitudeDelta: 0.0121,
                         }}>
-
                         {this.markBarsOnMap()}
 
                     </MapView>
@@ -290,9 +289,15 @@ const styles = StyleSheet.create({
     mapContainer: {
         flex: 0.7,
         width: windowWidth,
-        backgroundColor: '#444',
+        backgroundColor: '#000',
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'visible',
+        shadowColor: '#FFF',
+        shadowRadius:7,
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.9,
+        zIndex: 1,
     },
     map: {
         ...StyleSheet.absoluteFillObject,
@@ -315,7 +320,7 @@ const styles = StyleSheet.create({
     },
     barInfoview: {
         alignItems:'center',
-        paddingTop: 5,
+        paddingTop: 10,
         width: windowWidth,
         height: '20%',
         backgroundColor: '#000',

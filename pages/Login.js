@@ -3,13 +3,13 @@ import { Dimensions, Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, V
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Isao } from 'react-native-textinput-effects';
-import {flushStorage, logCurrentStorage} from './Storage'; 
+import {flushStorage, logCurrentStorage} from './Storage';
 import {AsyncStorage} from 'react-native';
 import SwitchSelector from 'react-native-switch-selector';
 
 const windowWidth = Dimensions.get('window').width;
 
-const ENDPOINT = "https://uw-crowd-control.herokuapp.com/login";
+const ENDPOINT = 'https://uw-crowd-control.herokuapp.com/login';
 //const windowHeight = Dimensions.get('window').height;
 
 export class Login extends React.Component {
@@ -17,10 +17,10 @@ export class Login extends React.Component {
         super(props);
 
         // This removes all logged in users
-        // currently, we do not keep in memory whether or not 
+        // currently, we do not keep in memory whether or not
         // a user is logged in, but this ensures that they
         // are not when if they reach this page
-        //  flushStorage(); 
+        //  flushStorage();
 
         this.toState = function(){
             //console.log(this.username + " " + this.password);
@@ -32,12 +32,12 @@ export class Login extends React.Component {
 
             // This is the endpoint api
             const URL = `https://uw-crowd-control.herokuapp.com/login?email=${this.username}&password=${this.password}&key=su8tpE6D2gh`;
-            
+
             // Wrapping everything into async and using await allows for code to run procedurally
             // I couldn't get fetch to work asyncrouslly in another class
-            // so there's proabably a better way to do this 
+            // so there's proabably a better way to do this
             const request = async () => {
-                
+
                 const response = await fetch(URL); // Send the request
                 const json = await response.json(); // Jsonify
                 /*
@@ -49,15 +49,15 @@ export class Login extends React.Component {
                     "city": "User's city"
                 }
                 */
-                const result = Boolean(await json["Result"]); // Result stores (true/false) for whether or not a user exists
+                const result = Boolean(await json.Result); // Result stores (true/false) for whether or not a user exists
 
                 // Print it out
-                console.log(`User attempted login (${this.username},${this.password}) ~ got response: ${result} (This user ${result ? "exists" : "doesn't exist"})`);
-                console.log("Full JSON Object: ", json)
+                console.log(`User attempted login (${this.username},${this.password}) ~ got response: ${result} (This user ${result ? 'exists' : "doesn't exist"})`);
+                console.log('Full JSON Object: ', json);
                 // Make sure that there is no local storage
-                flushStorage(); 
+                flushStorage();
 
-                if(result || 1) // Case in which the user exists (just remove || 1)
+                if (result || 1) // Case in which the user exists (just remove || 1)
                 {
 
                     // Note, the JSON response will return the status, which automatically can select
@@ -65,20 +65,20 @@ export class Login extends React.Component {
                     let intendedStateFromJson = null;
 
                     // ** This is a real successful login **
-                    // As of now, we can ignore unsuccessful logins 
+                    // As of now, we can ignore unsuccessful logins
                     // and let the user enter the main screen regardless
-                    if(result){
+                    if (result){
                         // Map our react status to backend statuses (1-3)
-                        intendedStateFromJson = parseInt(json["Status"]);
-                        AsyncStorage.setItem('city', json['city']);
-                        switch(intendedStateFromJson){
+                        intendedStateFromJson = parseInt(json.Status);
+                        AsyncStorage.setItem('city', json.city);
+                        switch (intendedStateFromJson){
                             case 1:
                                 this.setState({
                                     navPath: 'HomeDrawer',
                                 });
                             break;
                             case 2:
-                                AsyncStorage.setItem('linkedBar', json['linkedBar']);
+                                AsyncStorage.setItem('linkedBar', json.linkedBar);
                                 this.setState({
                                     navPath: 'BouncerNav',
                                 });
@@ -92,10 +92,10 @@ export class Login extends React.Component {
                         // Similar to sharedPreferences in android
                         // however there are some bugs so i will comment this out
                         // storeData(this.email, this.state.navPath);
-                        this.setNavigation(intendedStateFromJson); 
+                        this.setNavigation(intendedStateFromJson);
                         this.props.navigation.navigate(this.state.navPath);
                     }
- 
+
                     // Catch-all, we can remove this for demo-time
                     if (this.state == null){
                         navPath: 'HomeDrawer';
@@ -106,16 +106,16 @@ export class Login extends React.Component {
                 }
                 // Need to add: case in which a user does not exist
                 // Popups for unsuccessful logins
-            }
+            };
             request(); // Send the request
-        }
+        };
 
         this.state = {
             navPath: 'HomeDrawer',
         };
 
-        this.username = ""; // says username, means email
-        this.password = "";
+        this.username = ''; // says username, means email
+        this.password = '';
 
     }
 
@@ -195,7 +195,7 @@ export class Login extends React.Component {
                 <View style={{flex:0.25, justifyContent:'center', alignItems:'center', backgroundColor: 'black'}}>
 
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.buttonLogin}
                             onPress={() => this.toState()}>
                             <LinearGradient
@@ -204,13 +204,13 @@ export class Login extends React.Component {
                                 end={{ x: 1, y: 0 }}
                                 style={styles.buttonLoginGrad}>
                                     <Text
-                                        style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
+                                        style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
                                         Login
                                     </Text>
                             </LinearGradient>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.buttonSignup}
                             onPress={() => this.props.navigation.navigate('Signup')}>
                             <LinearGradient
@@ -219,7 +219,7 @@ export class Login extends React.Component {
                                 end={{ x: 1, y: 0 }}
                                 style={styles.buttonLoginGrad}>
                                     <Text
-                                        style={{color:'#FFF', fontWeight:"bold", fontSize:20}}>
+                                        style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
                                         Sign Up
                                     </Text>
                             </LinearGradient>

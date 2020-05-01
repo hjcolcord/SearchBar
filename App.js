@@ -5,6 +5,7 @@ import {Login} from './pages/Login';
 import {Signup} from './pages/Signup'
 import {UserLanding} from './pages/UserLanding';
 import {BarDetails} from './pages/BarDetails';
+import {EventsCalendar} from './pages/EventsCalendar';
 import {BarList} from './pages/BarList';
 import {BarInfo} from './pages/BarInfo';
 import {Settings} from './pages/Settings';
@@ -86,6 +87,7 @@ function HomeStack() {
     <Stack.Navigator headerMode="none" initialRouteName="Landing">
       <Stack.Screen name="Landing" component={UserLanding} />
       <Stack.Screen name="BarDetails" component={BarDetails}/>
+      <Stack.Screen name="EventsCalendar" component={EventsCalendar}/>
     </Stack.Navigator>
   );
 }

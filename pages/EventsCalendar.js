@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Image, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, ImageBackground, Platform, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -10,7 +10,7 @@ import { getPathFromState } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export class BarDetails extends React.Component {
+export class EventsCalendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -65,11 +65,22 @@ export class BarDetails extends React.Component {
         return this.picPathName;
     }
 
-    goToEventsCalendar = () => {
-        this.props.navigation.navigate('EventsCalendar', {
-            barName: this.props.route.params.barName,
-            barVal: this.props.route.params.barVal,
-          });
+    populateDeals() {
+        let numDeals = 7;
+        let dealsList = [];
+        for (let i = 0; i < numDeals; i++) {
+            dealsList.push(
+                <View style={{marginBottom: 10, width: windowWidth, height: 125, alignItems: 'center'}}>
+                    <View style={styles.dealTile}>
+                        <Text  style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
+                            Event #{i + 1}
+                        </Text>
+                    </View>
+
+                </View>
+            );
+        }
+        return dealsList;
     }
 
     render(){
@@ -95,7 +106,7 @@ export class BarDetails extends React.Component {
                             <View style = {styles.headerSide}>
                                 <TouchableOpacity
                                     style={{justifyContent:'center', alignItems:'center'}}
-                                    onPress={() => this.props.navigation.navigate('Landing')}>
+                                    onPress={() => this.props.navigation.navigate('BarDetails')}>
                                     <MaterialIcon
                                         style={{marginBottom: 0}}
                                         name="chevron-left"
@@ -119,54 +130,13 @@ export class BarDetails extends React.Component {
 
                         </LinearGradient>
                 </View>
-
-                <View style={styles.mainContainer}>
-                    <Image
-                        style={{width: 325, height:200, opacity: 0.7}}
+                <ScrollView
+                    style={styles.eventsContainer}>
+                    {this.populateDeals()}
+                </ScrollView>
+                <ImageBackground
+                        style={styles.image}
                         source={this.getPath()}/>
-                    <View style={styles.barInfoSect}>
-                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                            {this.props.route.params.barName}{'\n'}
-                        </Text>
-                        <Text style={{width: '100%', color:'#FFF', fontWeight:'300', fontSize:20, textDecorationLine:'underline'}}>
-                            Hours
-                        </Text>
-                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                            Mon-Thur: {'\n'}
-                            Fri: {'\n'}
-                            Sat: {'\n'}
-                            Sun:
-                        </Text>
-                        <Text style={{width: '100%', color:'#FFF', fontWeight:'300', fontSize:20, textDecorationLine:'underline'}}>
-                            Location
-                        </Text>
-                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                        {this.props.route.params.location}
-                        </Text>
-                        <Text style={{width: '100%', color:'#FFF', fontWeight:'300', fontSize:20, textDecorationLine:'underline'}}>
-                            Deals
-                        </Text>
-                        <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                            Deal 1: {'\n'}
-                            Deal 2: {'\n'}
-                            Deal 3:
-                        </Text>
-                    </View>
-                    <TouchableOpacity
-                        style={styles.buttonLogin}
-                        onPress={this.goToEventsCalendar}>
-                        <LinearGradient
-                            colors={['#A537FD', '#00EBBE']}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.buttonLoginGrad}>
-                                <Text
-                                    style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
-                                    Events Calendar
-                                </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
             </View>
             );
         }
@@ -221,29 +191,15 @@ const styles = StyleSheet.create({
         width: windowWidth,
         backgroundColor: '#000',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         paddingTop: 0,
     },
     map: {
         ...StyleSheet.absoluteFillObject,
     },
-    buttonLogin: {
-        width: windowWidth * 0.8,
-        height: 60,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-        shadowColor: '#FFF',
-        shadowRadius:5,
-        shadowOffset: {width: 0, height: 1},
-        shadowOpacity: 0.7,
-      },
-    buttonLoginGrad: {
-        width: windowWidth * 0.7,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 20,
+    eventsContainer: {
+        flex: 1,
+        zIndex: 1,
     },
     barInfoSect: {
         width: windowWidth * 0.8,
@@ -251,7 +207,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#222',
         shadowColor: '#FFF',
-        shadowRadius: 10,
+        shadowRadius:5,
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.7,
         paddingBottom: 20,
@@ -259,5 +215,23 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         borderRadius: 15,
+    },
+    image: {
+        position: 'absolute',
+        height: 400,
+        width: windowWidth,
+        opacity: 0.1,
+    },
+    dealTile: {
+        width: '80%',
+        height:'100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor:'#FFFFFF33',
+        borderRadius: 15,
+        shadowColor: '#FFF',
+        shadowRadius:15,
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.5,
     },
 });

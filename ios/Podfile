@@ -54,8 +54,11 @@ target 'SearchBar' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  # React Native Maps dependencies
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
   pod 'GoogleMaps'
-  pod 'react-native-google-maps', path: '../node_modules/react-native-maps'
+  pod 'Google-Maps-iOS-Utils'
 
   target 'SearchBarTests' do
     inherit! :complete
