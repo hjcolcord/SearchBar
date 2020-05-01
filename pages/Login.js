@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Isao } from 'react-native-textinput-effects';
@@ -15,7 +15,7 @@ const ENDPOINT = 'https://uw-crowd-control.herokuapp.com/login';
 export class Login extends React.Component {
     constructor(props) {
         super(props);
-
+        this.loginFlex = 0.4;
         // This removes all logged in users
         // currently, we do not keep in memory whether or not
         // a user is logged in, but this ensures that they
@@ -146,6 +146,9 @@ export class Login extends React.Component {
     }
 
     render(){
+        if (Platform.OS === 'android') {
+            this.loginFlex = 0.55;
+        }
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor={'#000'} barStyle={'light-content'}/>
@@ -160,74 +163,70 @@ export class Login extends React.Component {
                             searchbar
                     </Text>
                 </View>
-
-                <KeyboardAvoidingView
-                    style={styles.loginBox}
-                    behavior={'height'}>
-                    <View style={styles.loginBoxInterior}>
-                        <Isao
-                            label={'Email'}
-                            // this is applied as active border and label color
-                            activeColor={'#00EBBE'}
-                            onChangeText={(username) => this.username = (username)}
-                            // active border height
-                            borderHeight={2}
-                            inputPadding={16}
-                            labelHeight={20}
-                            // this is applied as passive border and label color
-                            passiveColor={'#dadada'}
-                        />
-                        <Isao
-                            label={'Password'}
-                            // this is applied as active border and label color
-                            activeColor={'#A537FD'}
-                            onChangeText={(password) => this.password = (password)}
-                            // active border height
-                            borderHeight={2}
-                            inputPadding={16}
-                            secureTextEntry={true}
-                            labelHeight={20}
-                            // this is applied as passive border and label color
-                            passiveColor={'#dadada'}
-                        />
-                    </View>
-                </KeyboardAvoidingView>
-                <View style={{flex:0.25, justifyContent:'center', alignItems:'center', backgroundColor: 'black'}}>
-
-
-                        <TouchableOpacity
-                            style={styles.buttonLogin}
-                            onPress={() => this.toState()}>
-                            <LinearGradient
-                                colors={['#A537FD', '#00EBBE']}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.buttonLoginGrad}>
-                                    <Text
-                                        style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
-                                        Login
-                                    </Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.buttonSignup}
-                            onPress={() => this.props.navigation.navigate('Signup')}>
-                            <LinearGradient
-                                colors={['#A537FD', '#00EBBE']}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.buttonLoginGrad}>
-                                    <Text
-                                        style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
-                                        Sign Up
-                                    </Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-
-
+                <View style={{flex: this.loginFlex, alignItems:'center'}}>
+                    <KeyboardAvoidingView
+                        style={styles.loginBox}
+                        behavior={'height'}>
+                        <View style={styles.loginBoxInterior}>
+                            <Isao
+                                autoCapitalize={'none'}
+                                label={'Email'}
+                                // this is applied as active border and label color
+                                activeColor={'#00EBBE'}
+                                onChangeText={(username) => this.username = (username)}
+                                // active border height
+                                borderHeight={2}
+                                inputPadding={16}
+                                labelHeight={20}
+                                // this is applied as passive border and label color
+                                passiveColor={'#dadada'}
+                            />
+                            <Isao
+                                autoCapitalize={'none'}
+                                label={'Password'}
+                                // this is applied as active border and label color
+                                activeColor={'#A537FD'}
+                                onChangeText={(password) => this.password = (password)}
+                                // active border height
+                                borderHeight={2}
+                                inputPadding={16}
+                                secureTextEntry={true}
+                                labelHeight={20}
+                                // this is applied as passive border and label color
+                                passiveColor={'#dadada'}
+                            />
+                        </View>
+                    </KeyboardAvoidingView>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate('Signup')}>
+                            <Text
+                                style={{color:'#FFF', fontWeight:'200', fontSize:16, textDecorationLine: 'underline'}}>
+                                Sign Up!
+                            </Text>
+                    </TouchableOpacity>
                 </View>
-
+                <View style={{flex:0.45, justifyContent:'flex-start', alignItems:'center', backgroundColor: 'black'}}>
+                    <TouchableOpacity
+                        style={styles.buttonLogin}
+                        onPress={() => this.toState()}>
+                        <LinearGradient
+                            colors={['#A537FD', '#00EBBE']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.buttonLoginGrad}>
+                                <Text
+                                    style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
+                                    Login
+                                </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                            <Text
+                                style={{color:'#FFF', fontWeight:'200', fontSize:16, textDecorationLine: 'underline'}}>
+                                Forgot Password?
+                            </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
@@ -285,7 +284,7 @@ const styles = StyleSheet.create({
     height: 174,
   },
   loginBox: {
-      flex: 0.4,
+      flex: 0.9,
       width: windowWidth * 0.7,
       marginBottom: 15,
       backgroundColor: '#2D2D2D',

@@ -117,7 +117,7 @@ export class UserLanding extends React.Component {
     }
 
     render(){
-        console.log(this.state.bars);
+        //console.log(this.state.bars);
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }

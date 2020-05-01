@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         height: 400,
         width: windowWidth,
-        opacity: 0.1,
+        opacity: 0.05,
     },
     dealTile: {
         width: '80%',
