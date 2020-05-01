@@ -1,12 +1,14 @@
 import React from 'react';
-import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {flushStorage, logCurrentStorage} from './Storage';
 import MapView from 'react-native-maps';
 import {AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+console.disableYellowBox = true;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,12 +25,16 @@ export class UserLanding extends React.Component {
             kkWait: 0,
             uuWait: 0,
             selectedBar: 'Select a bar!',
+            selectedBarVal: null,
             selectedCapacity: 100,
             selectedOccupancy: 56,
             capacityString: '',
             selectedAddress: '',
             dealButton: 0,
             bars: null, // Holds a JSON object of all the bars
+            searchbarHeight: new Animated.Value(0),
+            searchIconSize: new Animated.Value(50),
+            cancelIconSize: new Animated.Value(0),
         };
 
         // Get all the bars upon loading
@@ -58,6 +64,7 @@ export class UserLanding extends React.Component {
         //let string = 'Current Occupancy: ' + this.state.selectedOccupancy + '/' + {this.state.selectedCapacity};
         this.setState({
             selectedBar: this.state.bars[barVal].bar,
+            selectedBarVal: barVal,
             dealButton: 60,
             capacityString: 'Current Occupancy: ' + this.state.bars[barVal].patrons + '/' + this.state.bars[barVal].capacity,
         });
@@ -82,8 +89,31 @@ export class UserLanding extends React.Component {
         return mapMarkers;
     }
 
+    goToBarDetails = () => {
+        this.props.navigation.navigate('BarDetails', {
+            barName: this.state.selectedBar,
+            barVal: this.state.selectedBarVal,
+          });
+    }
+
+    showSearch = () => {
+        Animated.timing(this.state.searchbarHeight, {
+            useNativeDriver: false,
+            toValue: 50,
+            duration: 3000,
+            easing: Easing.cubic,
+        }).start();
+    }
+    hideSearch = () => {
+        Animated.timing(this.state.searchbarHeight, {
+            useNativeDriver: false,
+            toValue: 0,
+            duration: 3000,
+            easing: Easing.cubic,
+        }).start();
+    }
+
     render(){
-        console.log(this.state.bars);
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }
@@ -125,10 +155,38 @@ export class UserLanding extends React.Component {
                                     end={{ x: 1, y: 0 }}
                                     style={styles.lineHighlight}/>
                             </View>
-                            <View style = {styles.headerSide}/>
+                            <View style = {styles.headerSide}>
+                                <TouchableOpacity
+                                    onPress={() => this.showSearch()}>
+                                    <MaterialIcon
+                                        name="magnify"
+                                        size={36}
+                                        color={'#FFF'}
+                                        backgroundColor={'#00000000'}
+                                    />
+                                </TouchableOpacity>
+                            </View>
 
                         </LinearGradient>
                 </View>
+
+                <Animated.View style={[styles.searchDrop, {height: this.state.searchbarHeight}]}>
+                    <LinearGradient
+                        colors={['#000', '#222']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0.5, y: 1 }}
+                        style={styles.header}>
+                        <TextInput style={styles.searchInput}/>
+                        <TouchableOpacity
+                            onPress={() => this.hideSearch()}>
+                            <Icon
+                                name="circle-with-cross"
+                                size={30}
+                                color={'#FFF'}
+                                backgroundColor={'#00000000'}/>
+                    </TouchableOpacity>
+                    </LinearGradient>
+                </Animated.View>
 
                 <View style={styles.mapContainer}>
                     <MapView
@@ -156,7 +214,8 @@ export class UserLanding extends React.Component {
                         </Text>
                     </View>
                     <TouchableOpacity
-                        style={[styles.buttonLogin,{height: this.state.dealButton}]}>
+                        style={[styles.buttonLogin,{height: this.state.dealButton}]}
+                        onPress={this.goToBarDetails}>
                         <LinearGradient
                             colors={['#A537FD', '#00EBBE']}
                             start={{ x: 0, y: 0 }}
@@ -164,7 +223,7 @@ export class UserLanding extends React.Component {
                             style={styles.buttonLoginGrad}>
                                 <Text
                                     style={{color:'#FFF', fontWeight:'bold', fontSize:20}}>
-                                    View Deals
+                                    Deals and Details
                                 </Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -250,5 +309,18 @@ const styles = StyleSheet.create({
         width: windowWidth,
         height: '40%',
         backgroundColor: '#000',
+    },
+    searchDrop: {
+        width: windowWidth,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#000',
+        overflow: 'hidden',
+    },
+    searchInput: {
+        height: 30,
+        width: windowWidth * 0.6,
+        borderBottomColor: '#FFF',
+        borderBottomWidth: 1,
     },
 });
