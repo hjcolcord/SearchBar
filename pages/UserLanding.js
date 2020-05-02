@@ -8,6 +8,7 @@ import {AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const ENDPOINT = 'https://uw-crowd-control.herokuapp.com/findBars';

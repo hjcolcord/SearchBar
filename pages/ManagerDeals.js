@@ -1,13 +1,34 @@
-import React from 'react';
-import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
+import React, {Component, useState } from 'react';
+
+import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View, FlatList, BackHandler,TextInput, DatePickerAndroid} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/Entypo';
+import DatePicker from 'react-native-datepicker';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ActionButton from 'react-native-action-button';
+import Icon1 from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
+
+
+import Dialog, {
+    DialogTitle,
+    DialogContent,
+    DialogFooter,
+    DialogButton,
+    SlideAnimation,
+    ScaleAnimation,
+  } from 'react-native-popup-dialog';
+
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+
+
+
+    
 
 export class ManagerDeals extends React.Component {
     constructor(props) {
@@ -15,9 +36,17 @@ export class ManagerDeals extends React.Component {
         this.state = {
         };
         this.notchHeight = 30;
-
+        
+        
     }
+    
+    
+    
+    
+    
+
     render(){
+        
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }
@@ -65,16 +94,347 @@ export class ManagerDeals extends React.Component {
                         </LinearGradient>
                 </View>
 
+
+
                 <View style={styles.mainContainer}>
-                    <Text style={{color:'#FFF', fontWeight:'300', fontSize:20}}>
-                        Manager Deals
-                    </Text>
+                    <FlatList
+                        style={styles.barlist, { paddingTop: 0 }, { paddingRight: 75 }}
+                        data={[
+                            { key: 'Bar Deal 1' },
+                            { key: 'Bar Deal 2' },
+                            { key: 'Bar Deal 3' },
+                        ]}
+                        renderItem={({ item }) =>
+                            <LinearGradient
+                                colors={['black', 'grey']}
+                                start={{ x: 0, y: 1 }}
+                                end={{ x: 0, y: -0.05 }}
+                            >
+                                <Text style={{ paddingTop: 20, paddingBottom: 22, paddingLeft: 10, color: '#30A7CB', fontSize: 20, textAlign: 'left' }}>
+                                    {item.key}
+                                </Text>
+
+                            </LinearGradient>
+                        }
+                         />
+                    <ActionButton buttonColor="#30A7CB" >
+
+                        <ActionButton.Item buttonColor='#9632F8' title="Create Deal" onPress={() => { this.setState({ visible: true }); }}>
+                            <Icon name="plus" style={styles.plusButtonIcon} />
+                        </ActionButton.Item>
+
+                        <ActionButton.Item buttonColor='#7052BA' title="Delete Deal" onPress={() => { this.setState({ defaultAnimationDialog: true }); }}>
+                            <Icon name="minus" style={styles.minusButtonIcon} />
+                        </ActionButton.Item>
+
+                        <ActionButton.Item buttonColor='#6C5DE6' title="Edit Deal" onPress={() => this.setState({ scaleAnimationDialog: true })}>
+                            <Icon name="edit" style={styles.editButtonIcon} />
+                        </ActionButton.Item>
+
+                        <ActionButton.Item buttonColor='#3F92D3' title="Lightning Deal" onPress={() => this.setState({ slideAnimationDialog: true })}>
+                            <Icon1 name="bolt" style={styles.lightningButtonIcon} />
+                        </ActionButton.Item>
+
+                    </ActionButton> 
+                    
+                    <Dialog
+                        style={{ backgroundColor: 'black' }}
+                        width={0.9}
+                        height={0.9}
+                        dialogTitle={
+                            <DialogTitle
+                                title="Create New Deal"
+                                style={{
+                                    backgroundColor: 'black'
+                                }}
+                                textStyle={styles.dialogTitle}
+                                hasTitleBar={true}
+                                align="center"
+                            />
+                        }
+                        visible={this.state.visible}
+                        footer={
+                            <DialogFooter style={{ backgroundColor: 'black',}}>
+                                <DialogButton
+                                    text="Create"
+                                    textStyle={{ color: "green" }}
+                                    onPress={() => { }}
+                                />
+                                <DialogButton
+                                    text="Cancel"
+                                    textStyle={{ color: 'rgba(48, 167, 203,0.9)' }}
+                                    onPress={() => { this.setState({ visible: false }); }}
+                                />
+                            </DialogFooter>
+                        }
+                    >
+                        <DialogContent style={styles.dialogContent1} >
+                            <Text  style={{ color: 'rgba(48, 167, 203,0.9)' , fontSize:25}}>
+                              Deal Name:
+                            </Text>
+
+                            <TextInput 
+                                 style={styles.creditInput}
+                                 placeholder = "Enter Here"
+                                 placeholderTextColor='#144757'
+                            />
+
+
+
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                Deal Date:
+                            </Text>
+
+                            <DatePicker
+                                style={{ width: 200 },{backgroundColor:'black'} }
+                                date={this.state.date}
+                                mode="date"
+                                placeholder="select date"
+                                placeholderTextColor='rgba(48, 167, 203,0.9)'
+                                format="YYYY-MM-DD"
+                                minDate="2020-05-01"
+                                maxDate="2025-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0,
+                                        Iconcolor:'rgba(48, 167, 203,0.9)'
+                                    },
+                                    dateInput: { marginLeft: 36, color: 'rgba(48, 167, 203,0.9)' }
+                                }}
+                                onDateChange={(date) => { this.setState({ date: date }) }}
+                            />
+
+
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                Deal Start Time:
+                            </Text>
+                            
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="XX:XX AM/PM"
+                                placeholderTextColor='#144757'
+                            ></TextInput>
+
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                Deal End Time:
+                            </Text>
+                            
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="XX:XX AM/PM"
+                                placeholderTextColor='#144757'
+                            ></TextInput>
+                        </DialogContent>
+                    </Dialog>
+
+
+                    <Dialog
+                        onDismiss={() => { this.setState({ defaultAnimationDialog: false }); }}
+                        style={{ backgroundColor: 'black' }}
+                        width={0.75}
+                        height={0.5}
+                        dialogTitle={
+                            <DialogTitle
+                                title="Delete Deal"
+                                style={{
+                                    backgroundColor: 'black'
+                                }}
+                                textStyle={styles.dialogTitle}
+                                hasTitleBar={true}
+                                align="center"
+                            />
+                        }
+                        visible={this.state.defaultAnimationDialog}
+                        footer={
+                            <DialogFooter  style={{backgroundColor: 'black',}}>
+                                <DialogButton
+                                    text="Delete"
+                                    textStyle={{color:"red"}}
+                                    onPress={() => { }}
+                                />
+                                <DialogButton
+                                    text="Cancel"
+                                    textStyle={{color:'rgba(48, 167, 203,0.9)'}}
+                                    onPress={() => { this.setState({ defaultAnimationDialog: false }); }}
+                                />
+                            </DialogFooter>
+                        }
+                    >
+                        <DialogContent style={styles.dialogContent1}>
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                Deal Name:
+                              </Text>
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="Enter Here"
+                                placeholderTextColor='#144757'
+                            ></TextInput>
+                        </DialogContent>
+                    </Dialog>
+
+                    <Dialog
+                        style={{ backgroundColor: 'black' }}
+                        width={0.9}
+                        height={0.9}
+                        dialogTitle={
+                            <DialogTitle
+                                title="Modify Deal"
+                                style={{
+                                    backgroundColor: 'black'
+                                }}
+                                textStyle={styles.dialogTitle}
+                                hasTitleBar={true}
+                                align="center"
+                            />
+                        }
+                        visible={this.state.scaleAnimationDialog}
+                        footer={
+                            <DialogFooter  style={{backgroundColor: 'black',}}>
+                                <DialogButton
+                                    text="Save"
+                                    textStyle={{color:"green"}}
+                                    onPress={() => { }}
+                                />
+                                <DialogButton
+                                    text="Cancel"
+                                    textStyle={{color:'rgba(48, 167, 203,0.9)'}}
+                                    onPress={() => {
+                                        this.setState({ scaleAnimationDialog:false});}}
+                                />
+                            </DialogFooter>
+                        }
+                    >
+                        <DialogContent style={styles.dialogContent1} >
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                Old Deal Name:
+                            </Text>
+                            
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="Enter Here"
+                                placeholderTextColor='#144757'
+                            />
+                            
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                New Deal Name:
+                            </Text>
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="Enter Here"
+                                placeholderTextColor='#144757'
+                            />
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                New Deal Date:
+                            </Text>
+
+                            <DatePicker
+                                style={{ width: 200 },{backgroundColor:'black'} }
+                                date={this.state.date}
+                                mode="date"
+                                placeholder="select date"
+                                placeholderTextColor='rgba(48, 167, 203,0.9)'
+                                format="YYYY-MM-DD"
+                                minDate="2020-05-01"
+                                maxDate="2025-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0,
+                                        Iconcolor:'rgba(48, 167, 203,0.9)'
+                                    },
+                                    dateInput: { marginLeft: 36, color: 'rgba(48, 167, 203,0.9)' }
+                                }}
+                                onDateChange={(date) => { this.setState({ date: date }) }}
+                            />
+
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                New Deal Start Time:
+                            </Text>
+
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="Enter Here"
+                                placeholderTextColor='#144757'
+                            />
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 25 }}>
+                                New Deal End Time:
+                            </Text>
+
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="Enter Here"
+                                placeholderTextColor='#144757'
+                            />
+                        </DialogContent>
+                    </Dialog>
+
+                    <Dialog
+                        style={{ backgroundColor: 'black' }}
+                        width={0.9}
+                        height={0.9}
+                        dialogTitle={
+                            <DialogTitle
+                                title="LIGHTNING DEAL"
+                                style={{ backgroundColor: 'black' }}
+                                textStyle={styles.lightningTitle}
+                                hasTitleBar={true}
+                                align="center"
+                            />
+                      }
+                        visible={this.state.slideAnimationDialog}
+                        footer={
+                            <DialogFooter style={{ backgroundColor: 'black', }}>
+                                <DialogButton
+                                    text="CREATE"
+                                    textStyle={{ color: '#bbe812' }}
+                                    onPress={() => { }}
+                                />
+                                <DialogButton
+                                    text="Cancel"
+                                    textStyle={{color:'rgba(48, 167, 203,0.9)'}}
+                                    onPress={() => {this.setState({slideAnimationDialog: false });}}
+                                />
+                            </DialogFooter>
+                                }
+                    >
+                        <DialogContent style={styles.dialogContent1} >
+                            <Text style={{ color: '#bbe812', fontSize: 25 }}>
+                                Deal Name:
+                            </Text>
+
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="Enter Here"
+                                placeholderTextColor='#657e0a'
+                            />
+
+                              <Text style={{ color: '#bbe812', fontSize: 25 }}>
+                                Run Deal Until:
+                            </Text>
+
+                            <TextInput
+                                style={styles.creditInput}
+                                placeholder="XX:XX AM/PM"
+                                placeholderTextColor='#657e0a'
+                            />
+                        </DialogContent>
+                    </Dialog>
                 </View>
             </View>
-            );
-        }
+        );
     }
+}
 const styles = StyleSheet.create({
+    
     container: {
         flex: 1,
         backgroundColor: '#000',
@@ -121,10 +481,16 @@ const styles = StyleSheet.create({
     },
     mainContainer: {
         flex: 1,
-        width: windowWidth,
-        backgroundColor: '#444',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: 'black',
+        width: 360,
+    },
+
+    creditInput: {
+        flex: 1,
+        color: 'rgba(48, 167, 203,0.9)', //Expecting this to change input text color
+        height: 30,
+        fontSize: 20,
     },
     map: {
         ...StyleSheet.absoluteFillObject,
@@ -139,6 +505,7 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.7,
       },
+
     buttonLoginGrad: {
         width: windowWidth * 0.7,
         height: 40,
@@ -146,4 +513,128 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
       },
+
+      item: {
+        flex:1,
+        padding: 10,
+        fontSize: 18,
+        height: 60,
+        color: 'blue',
+        backgroundColor: "grey"
+      },
+
+      editBar:{
+        flex:1,
+        backgroundColor:'green'
+
+      },
+
+      barlist: {
+        flex:1,
+        height:60,
+        
+        alignItems: 'stretch'
+        
+        
+      },
+      actionButtonIcon: {
+        fontSize: 21,
+        height: 22,
+        color:"#151519"
+       
+        
+       
+      },
+      plusButtonIcon: {
+        fontSize: 21,
+        height: 22,
+        color:'black'
+       
+        
+       
+      },
+      minusButtonIcon: {
+        fontSize: 21,
+        height: 22,
+        color:"black"
+       
+        
+       
+      },
+      
+
+
+      editButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color:"black"
+       
+        
+       
+      },
+      lightningButtonIcon:{
+        fontSize: 24,
+        height: 22,
+        color:'black',
+
+
+      },
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      dialogContentView: {
+        // flex: 1,
+        paddingLeft: 18,
+        paddingRight: 18,
+        // backgroundColor: '#000',
+        // opacity: 0.4,
+        // alignItems: 'center',
+        // justifyContent: 'center',
+      },
+      dialogContent1: {
+        flex:1,
+        backgroundColor:"black",
+        flexDirection:"column",
+      },
+      dialogTitle:{
+        color: 'rgba(48, 167, 203,0.9)',
+        //fontWeight:"bold",
+         fontSize:32
+
+      },
+      lightningTitle:{
+        color: '#bbe812',
+        //fontWeight:"bold",
+         fontSize:32
+
+      },
+     
+      navigationBar: {
+        borderBottomColor: '#b5b5b5',
+        borderBottomWidth: 0.5,
+        backgroundColor: '#ffffff',
+      },
+      navigationTitle: {
+        padding: 10,
+      },
+      navigationButton: {
+        padding: 10,
+      },
+      navigationLeftButton: {
+        paddingLeft: 20,
+        paddingRight: 40,
+      },
+      navigator: {
+        flex: 1,
+        // backgroundColor: '#000000',
+      },
+      customBackgroundDialog: {
+        opacity: 0.5,
+        backgroundColor: '#000',
+      },
+     
+
+
 });

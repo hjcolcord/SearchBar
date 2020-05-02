@@ -83,8 +83,9 @@ function HomeDrawer() {
 function ManagerNav() {
   return (
     <Tab.Navigator
+      
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ focused, color, size,}) => {
             let iconName;
 
             if (route.name === 'ManagerHome') {
@@ -100,12 +101,18 @@ function ManagerNav() {
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'gray',
+          style: {
+            backgroundColor: 'black',
+            
+          },
+          activeTintColor: '#30A7CB',
+          inactiveTintColor: '#144757',
+          
+          
         }}
       >
-        <Tab.Screen name="ManagerHome" component={ManagerLanding} />
-        <Tab.Screen name="ManagerDeals" component={ManagerDeals} />
+        <Tab.Screen name="ManagerHome"  component={ManagerLanding} />
+        <Tab.Screen name="ManagerDeals" component={ManagerDeals}  />
       </Tab.Navigator>
   );
 }
