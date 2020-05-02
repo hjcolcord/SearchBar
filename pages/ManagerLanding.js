@@ -99,7 +99,7 @@ export class ManagerLanding extends React.Component {
                             <Icon1 name="ios-pint" style={styles.ActionButtonItem} />
                         </ActionButton.Item>
 
-                        <ActionButton.Item buttonColor='#27B1C8' title="Staffing" onPress={() => { }}>
+                        <ActionButton.Item buttonColor='#27B1C8' title="Staffing" onPress={() => {this.setState({scaleAnimationDialog: true}) }}>
                             <Icon1 name="ios-people" style={styles.ActionButtonItem} />
                         </ActionButton.Item>
 
@@ -252,8 +252,61 @@ export class ManagerLanding extends React.Component {
                             <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 28 }}>
                                 Are you sure you want to logout?
                             </Text>
-                             </DialogContent>
-                             </Dialog>
+                        </DialogContent>
+                    </Dialog>
+
+                    <Dialog style={{ backgroundColor: 'black' }}
+                        width={windowWidth}
+                        height={windowHeight}
+                        dialogTitle={
+                            <DialogTitle
+                                title="Staff Schedule"
+                                style={{ backgroundColor: 'black' }}
+                                textStyle={styles.dialogTitle}
+                                hasTitleBar={true}
+                                align="center"
+                            />
+                        }
+                        visible={this.state.scaleAnimationDialog}
+                        footer={
+                            <DialogFooter style={{
+                                backgroundColor: 'black',
+                            }}>
+                                <DialogButton
+                                    text="Close"
+                                    textStyle={{ color: 'rgba(48, 167, 203,0.9)' }}
+                                    onPress={() => {
+                                        this.setState({
+                                            scaleAnimationDialog: false
+                                        });
+                                    }}
+                                />
+                            </DialogFooter>
+                            }
+                    >
+                        <DialogContent style={styles.dialogContent1} >
+                            <Text style={{ color: 'rgba(48, 167, 203,0.9)', fontSize: 28 }}>
+                                Bar name: 
+                            </Text>
+                            <Text style={styles.creditInput}>
+                                Whisky Jacks
+                            </Text>
+                            
+                            <Text  style={{ color: 'rgba(48, 167, 203,0.9)' , fontSize:28}}>
+                              Bar Address:
+                              </Text>
+                            <Text style={styles.creditInput}>
+                                123 State Street
+                             </Text>
+
+                            <Text  style={{ color: 'rgba(48, 167, 203,0.9)' , fontSize:28}}>
+                             Occupancy Level:
+                            </Text>
+                            <Text style={styles.creditInput}>
+                                100/100
+                            </Text>
+                        </DialogContent>
+                    </Dialog>
 
                     
 
