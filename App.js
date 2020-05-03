@@ -11,12 +11,14 @@ import {Settings} from './pages/Settings';
 import {ManagerLanding} from './pages/ManagerLanding';
 import {ManagerDeals} from './pages/ManagerDeals';
 import {BouncerLanding} from './pages/BouncerLanding';
+import {Staffing} from './pages/Staffing'
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon1 from 'react-native-vector-icons/Ionicons';
 
 Icon.loadFont();
 MaterialIcon.loadFont();
@@ -94,29 +96,41 @@ function HomeStack() {
 function ManagerNav() {
   return (
     <Tab.Navigator
+      
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ focused, color, size,}) => {
             let iconName;
 
             if (route.name === 'ManagerHome') {
               iconName = focused
-                ? 'settings'
-                : 'settings-outline';
+                ? 'account'
+                : 'account-outline';
             } else if (route.name === 'ManagerDeals') {
               iconName = focused ? 'spa' : 'spa-outline';
             }
+
+           else if (route.name === 'Staffing') {
+            iconName = focused ? "clipboard-account" : "clipboard-account-outline";
+           }
 
             // You can return any component that you like here!
             return <MaterialIcon name={iconName} size={size} color={color} />;
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'gray',
+          style: {
+            backgroundColor: 'black',
+            
+          },
+          activeTintColor: '#30A7CB',
+          inactiveTintColor: '#144757',
+          
+          
         }}
       >
-        <Tab.Screen name="ManagerHome" component={ManagerLanding} />
-        <Tab.Screen name="ManagerDeals" component={ManagerDeals} />
+        <Tab.Screen name="ManagerHome"  component={ManagerLanding} />
+        <Tab.Screen name="ManagerDeals" component={ManagerDeals}  />
+        <Tab.Screen name="Staffing"     component={Staffing}     />
       </Tab.Navigator>
   );
 }
@@ -130,6 +144,7 @@ export default function App() {
         <Stack.Screen name="ManagerNav" component={ManagerNav}/>
         <Stack.Screen name="BouncerNav" component={BouncerLanding}/>
         <Stack.Screen name="Signup" component={Signup}/>
+        <Stack.Screen name="Staffing" component={Staffing} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -10,6 +10,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 console.disableYellowBox = true;
 
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const ENDPOINT = 'https://uw-crowd-control.herokuapp.com/findBars';
