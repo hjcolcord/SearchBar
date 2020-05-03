@@ -324,6 +324,7 @@ const styles = StyleSheet.create({
         width: windowWidth,
         height: '20%',
         backgroundColor: '#000',
+        // marginTop: 10,
     },
     searchDrop: {
         width: windowWidth,

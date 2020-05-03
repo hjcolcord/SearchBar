@@ -13,8 +13,7 @@ export class Settings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fname:"",
-            lname: "",
+            email:"",
             location:"",
             password:""
 
@@ -70,20 +69,12 @@ export class Settings extends React.Component {
 
                 <View style={styles.mainContainer}>
                     <Text style={styles.text}>
-                        First Name
+                        Email
                     </Text>
                     <TextInput
                         style={{fontSize: 30, textAlign: 'center', borderRadius:50, marginTop: 10 , height: windowHeight/12 ,backgroundColor: '#838383', width: windowWidth}}
-                        onChangeText={(text) => this.setState({fname: text})}
-                        value={this.state.fname}
-                    />
-                    <Text style={styles.text}>
-                        Last Name
-                    </Text>
-                    <TextInput
-                        style={{fontSize: 30, textAlign: 'center', borderRadius:50, marginTop: 10 , height: windowHeight/12 ,backgroundColor: '#838383', width: windowWidth}}
-                        onChangeText={(text) => this.setState({lname: text})}
-                        value={this.state.lname}
+                        onChangeText={(text) => this.setState({email: text})}
+                        value={this.state.email}
                     />
                     <Text style={styles.text}>
                         Location
