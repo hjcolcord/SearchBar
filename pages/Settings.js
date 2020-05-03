@@ -105,7 +105,7 @@ export class Settings extends React.Component {
                     <TouchableOpacity 
                     style={styles.buttonLogin}
                     //TODO: Navigate to BarInfo landing and send specific bar info with it
-                    onPress={() => {saveInfo()}}
+                    onPress={()=> alert("New Information Saved")}
                     >
                     <LinearGradient
                         colors={['#A537FD', '#00EBBE']}

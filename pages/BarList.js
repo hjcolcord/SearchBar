@@ -3,20 +3,47 @@ import { Dimensions, Image, KeyboardAvoidingView, Platform, StatusBar, StyleShee
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MapView from 'react-native-maps';
+import {AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const ENDPOINT = 'https://uw-crowd-control.herokuapp.com/findBars';
+
 export class BarList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            bars: null,
         };
         this.notchHeight = 30;
+
+        // Get all the bars upon loading
+        // Can also be called to update bars
+        // (Currently only called once when building UserLanding)
+        const getBars = async() => {
+            AsyncStorage.getItem('city', (error, city) => {
+                if (city == null){
+                    console.log('Warning, there is no existing city in AsyncStorage, no API call will be made.');
+                } else {
+                    const request = async () => {
+                        const response = await fetch(`${ENDPOINT}?city=${city}`);
+                        this.setState({
+                            bars: await response.json(),
+                        });
+                        AsyncStorage.setItem('bars', JSON.stringify(this.state.bars));
+                    };
+                    request();
+                }
+            });
+        };
+        getBars();
     }
+
     render(){
+        
         if (Platform.OS === 'android') {
             this.notchHeight = 0;
         }
@@ -67,40 +94,54 @@ export class BarList extends React.Component {
                         {"Bar List"}
                     </Text>
                     <ScrollView>
-                        {this.getBars()}
+                        {this.getBarsList()}
                     </ScrollView>
                 </View>
             </View>
             );
         }
 
-        getBars(){
+        
+
+        getBarsList(){
             //TODO: replace index with array or other object of bars list and switch for with foreach
             let x = new Array();
-            for (let index = 0; index < 10; index++) {
-                x[index] = this.barFormat(index);
-                
+            console.log("This is where bars should be stated " + this.state.bars)
+            if (this.state.bars !== null) {
+                for (let i = 0; i < this.state.bars.length; i++) {
+                    x[i] = this.barFormat(i);
+                }
             }
             return x;
         }
+
+        //Goes to detail page about specific bar
+        goToBarDetails(barVal){
+            this.props.navigation.navigate('BarDetails', {
+                barName: this.state.bars[barVal].bar,
+                barVal: barVal,
+                location: this.state.bars[barVal].address,
+              });
+        }
     
-        barFormat(info){
+        //Just the basic format for showing some of the info on the bars
+        barFormat(barVal){
             return (   
-            <View key={info} style={styles.buttonLogin, {borderRadius:50 ,padding: 30, margin: 10,backgroundColor: '#838383', width: windowWidth/1.2}}>
+            <View key={this.state.bars[barVal].bar} style={styles.buttonLogin, {borderRadius:50 ,padding: 30, margin: 10,backgroundColor: '#838383', width: windowWidth/1.2}}>
                 <Text style={{color: '#FFF', fontSize: 25}}>
-                    {"Name: " + info}
+                    {"Name: " + this.state.bars[barVal].bar}
                 </Text>
                 <Text style={{color: '#FFF', fontSize: 25}}>
-                    {"Capacity: "}
+                    {"Capacity: " + this.state.bars[barVal].patrons + '/' + this.state.bars[barVal].capacity}
                 </Text>
                 <Text style={{color: '#FFF', fontSize: 25}}>
-                    {"Wait Time: "}
+                    {"Wait Time: 0 min"}
                 </Text>
                 <View style={{alignSelf: 'center'}}>
                     <TouchableOpacity 
                         style={styles.buttonLogin}
                         //TODO: Navigate to BarInfo landing and send specific bar info with it
-                        onPress={() => this.props.navigation.navigate("BarInfo")}>
+                        onPress={() => this.goToBarDetails(barVal)}>
                         <LinearGradient
                             colors={['#A537FD', '#00EBBE']}
                             start={{ x: 0, y: 0 }}
